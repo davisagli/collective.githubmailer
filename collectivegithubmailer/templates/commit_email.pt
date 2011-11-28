@@ -1,0 +1,16 @@
+Repository: ${push.repository.name}
+Branch: ${push.ref}
+
+Commit:
+${commit.message}
+
+Date: ${commit.timestamp}
+Author: ${commit.author.name} (${commit.author.username}) <${commit.author.email}>
+
+In github: ${commit.url}
+
+Summary of changes:
+${files}
+
+Diff:
+${diff}

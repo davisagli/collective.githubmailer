@@ -6,7 +6,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
-requires = ['pyramid', 'github.event']
+requires = ['pyramid', 'pyramid_mailer', 'pyramid_tm', 'github.event']
 
 setup(name='collective.githubmailer',
       version='0.0',
