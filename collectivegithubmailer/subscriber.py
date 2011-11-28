@@ -38,7 +38,7 @@ def handle_push(event):
             subject = '%s/%s: %s' % (push['repository']['name'],
                                  push['ref'].split('/')[-1],
                                  short_commit_msg),
-            sender = "plone-cvs@lists.sourceforge.net",
+            sender = "%s <plone-cvs@lists.sourceforge.net>" % commit['author']['name'],
             recipients = ["dglick@gmail.com"],
             body = templates['commit_email.pt'](**data),
             extra_headers = {'Reply-To': reply_to}
