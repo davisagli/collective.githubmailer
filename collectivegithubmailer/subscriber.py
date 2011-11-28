@@ -1,5 +1,6 @@
 import os
 import logging
+import requests
 from pyramid.events import subscriber
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
@@ -14,27 +15,33 @@ templates = PageTemplateLoader(os.path.join(os.path.dirname(__file__), "template
 def handle_push(event):
     push = event.request.json_body
     logger.info(push)
+    mailer = get_mailer(event.request)
 
     for commit in push['commits']:
 
-        # TODO: add file summary and diff
+        short_commit_msg = commit['message'].split('\n')[0][:60]
+        reply_to = '%s <%s>' % (commit['author']['name'], commit['author']['email'])
+        diff = requests.get(commit['url'] + '.diff').content
+        
+        files = ['A %s' % f for f in commit['added']]
+        files.extend('M %s' % f for f in commit['modified'])
+        files.extend('D %s' % f for f in commit['removed'])
 
         data = {
             'push': push,
             'commit': commit,
-            'files': '',
-            'diff': '',
+            'files': '\n'.join(files),
+            'diff': diff,
         }
 
-        # TODO: include repo, branch & snippet of commit message in subject
-        # TODO: set reply-to to the commit author
-
         msg = Message(
-            subject = '%s : %s' % (push['repository']['name'],
-                                   push['ref']),
+            subject = '%s/%s: %s' % (push['repository']['name'],
+                                 push['ref'].split('/')[-1],
+                                 short_commit_msg),
             sender = "plone-cvs@lists.sourceforge.net",
             recipients = ["dglick@gmail.com"],
             body = templates['commit_email.pt'](**data),
+            extra_headers = {'Reply-To': reply_to}
             )
         
-        get_mailer(event.request).send(msg)
+        mailer.send(msg)
