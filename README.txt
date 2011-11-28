@@ -1,0 +1,1 @@
+collective.githubmailer README
