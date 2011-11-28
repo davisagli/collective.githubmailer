@@ -33,7 +33,7 @@ def handle_push(event):
             subject = '%s : %s' % (push['repository']['name'],
                                    push['ref']),
             sender = "plone-cvs@lists.sourceforge.net",
-            recipients = ["plone-cvs@lists.sourceforge.net"],
+            recipients = ["dglick@gmail.com"],
             body = templates['commit_email.pt'](**data),
             )
         
