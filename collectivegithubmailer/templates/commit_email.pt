@@ -9,4 +9,4 @@ ${commit.message}
 Files changed:
 ${files}
 
-${diff}
+${structure: diff}
