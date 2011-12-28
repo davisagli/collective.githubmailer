@@ -17,6 +17,10 @@ def handle_push(event):
     logger.info(push)
     mailer = get_mailer(event.request)
 
+    if len(push['commits']) > 40:
+        # safeguard against github getting confused and sending us the entire history
+        return
+
     for commit in push['commits']:
 
         short_commit_msg = commit['message'].split('\n')[0][:60]
@@ -39,7 +43,7 @@ def handle_push(event):
                                  push['ref'].split('/')[-1],
                                  short_commit_msg),
             sender = "%s <plone-cvs@lists.sourceforge.net>" % commit['author']['name'],
-            recipients = ["dglick@gmail.com"],
+            recipients = ["plone-cvs@lists.sourceforge.net"],
             body = templates['commit_email.pt'](**data),
             extra_headers = {'Reply-To': reply_to}
             )
